@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Room Tracker | Ratul Krishna Mojumder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans">
+
+    <nav class="bg-indigo-900 p-4 text-white flex justify-between items-center sticky top-0 z-40 shadow-xl">
+        <h1 class="text-xl font-black italic tracking-tighter">TRACKER.PRO</h1>
+        <div class="flex gap-2">
+            <button onclick="toggleLiveSidebar()" class="bg-red-600 px-3 py-2 rounded-lg text-xs font-bold animate-pulse">🔴 LIVE STATUS</button>
+            <div id="authArea">
+                <button onclick="openModal('mentorModal')" class="bg-white text-indigo-900 px-3 py-2 rounded-lg text-xs font-bold">MENTOR LOGIN</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="liveSidebar" class="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-black text-indigo-900">Current Bookings</h2>
+                <button onclick="toggleLiveSidebar()" class="text-gray-400 font-bold">✕</button>
+            </div>
+            <div id="sidebarLiveList" class="space-y-4 text-sm">
+                <p class="text-gray-400 italic">No classes running right now.</p>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto p-4 pt-8">
+        <div id="mentorDashboard" class="hidden mb-8 bg-indigo-50 p-6 rounded-2xl border-2 border-indigo-200">
+            <h2 class="text-lg font-black text-indigo-900 mb-4">Instructor Panel: Active Sessions</h2>
+            <div id="myBookingsList" class="grid grid-cols-1 gap-3"></div>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase">Current Day</label>
+                    <select id="daySelect" class="w-full p-4 bg-slate-50 border-none rounded-2xl font-bold">
+                        <option value="Sunday">Sunday</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-400 mb-2 uppercase">Slots</label>
+                    <div id="periodGrid" class="grid grid-cols-2 gap-2 text-[10px]"></div>
+                </div>
+            </div>
+            <button onclick="searchRooms()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all">SEARCH AVAILABLE ROOMS</button>
+        </div>
+
+        <div id="roomResults" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </main>
+
+    <footer class="text-center py-10 text-slate-400 text-[10px] uppercase tracking-widest">
+        Developed by: <span class="text-slate-900 font-bold">Ratul Krishna Mojumder</span>
+    </footer>
+
+    <div id="mentorModal" class="fixed inset-0 bg-black/40 backdrop-blur hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-xs text-center shadow-2xl">
+            <h2 class="font-black text-indigo-900 mb-6 uppercase">System Access</h2>
+            <input type="password" id="mCodeInput" class="w-full p-4 bg-slate-100 rounded-2xl mb-4 text-center text-xl outline-none" placeholder="CODE">
+            <button onclick="loginMentor()" class="w-full bg-indigo-900 text-white py-4 rounded-2xl font-bold">LOGIN</button>
+            <button onclick="closeModal('mentorModal')" class="mt-4 text-slate-300 font-bold text-xs">CANCEL</button>
+        </div>
+    </div>
+
+    <div id="bookingModal" class="fixed inset-0 bg-black/60 backdrop-blur hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-sm shadow-2xl">
+            <h2 id="bookRoomTitle" class="text-2xl font-black text-indigo-900 mb-2">Room No</h2>
+            <p class="text-xs text-slate-400 mb-6 uppercase font-bold">Class Registration</p>
+            
+            <div id="bookSlotList" class="space-y-2 mb-6 text-xs max-h-40 overflow-y-auto"></div>
+
+            <select id="wingSelect" class="w-full p-4 bg-slate-100 rounded-2xl mb-6 font-bold outline-none">
+                <option value="">Select Wing</option>
+                <option value="W1">Wing 1 (W1)</option>
+                <option value="W2">Wing 2 (W2)</option>
+                <option value="W3">Wing 3 (W3)</option>
+            </select>
+
+            <button onclick="submitBooking()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black shadow-lg">CONFIRM BOOKING</button>
+            <button onclick="closeModal('bookingModal')" class="w-full mt-2 text-slate-300 font-bold text-xs">BACK</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
