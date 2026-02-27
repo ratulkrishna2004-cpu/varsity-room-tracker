@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUST Tracker | Ratul Krishna Mojumder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            position: relative;
+            min-height: 100vh;
+        }
+        /* Varsity Background with Dark Shade Overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* linear-gradient creates the dark shade to prevent over-glow */
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.7)), url('varsity-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -1;
+        }
+        /* Glassmorphism Effect for Search Box */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        select option { color: #000; }
+        
+        /* Custom scrollbar for booking modal */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+    </style>
+</head>
+<body class="font-sans text-white">
+
+    <nav class="bg-indigo-950/80 backdrop-blur-md p-4 flex justify-between items-center sticky top-0 z-40 shadow-2xl">
+        <h1 class="text-xl font-black italic tracking-tighter uppercase">AUST TRACKER</h1>
+        <div class="flex gap-2">
+            <button onclick="toggleLiveSidebar()" class="bg-red-600 px-3 py-2 rounded-lg text-[10px] font-black animate-pulse uppercase">🔴 Live Status</button>
+            <div id="authArea">
+                <button onclick="openModal('mentorModal')" class="bg-white text-indigo-950 px-3 py-2 rounded-lg text-[10px] font-black uppercase">Mentor Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <div id="liveSidebar" class="fixed top-0 right-0 h-full w-72 bg-slate-900 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                <h2 class="text-xl font-black text-indigo-400 uppercase tracking-tight">Live Classes</h2>
+                <button onclick="toggleLiveSidebar()" class="text-white text-2xl">✕</button>
+            </div>
+            <div id="sidebarLiveList" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto p-4 pt-8">
+        
+        <div id="mentorDashboard" class="hidden mb-8 glass-card p-6 rounded-3xl border-indigo-400/30">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xs font-black text-indigo-300 uppercase tracking-widest">Mentor Control</h2>
+                <button onclick="logout()" class="text-red-400 text-[10px] font-black border border-red-500/30 px-3 py-1 rounded-lg hover:bg-red-500/10">LOGOUT</button>
+            </div>
+            <div id="myBookingsList" class="grid grid-cols-1 gap-3"></div>
+        </div>
+
+        <div class="glass-card p-6 md:p-10 rounded-[40px] shadow-2xl mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <label class="block text-[10px] font-black text-indigo-300 mb-3 uppercase tracking-widest">Select Day</label>
+                    <select id="daySelect" class="w-full p-4 bg-white/10 border border-white/20 rounded-2xl font-bold outline-none text-white focus:ring-2 ring-indigo-500">
+                        <option value="Sunday">Sunday</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-indigo-300 mb-3 uppercase tracking-widest">Available Slots</label>
+                    <div id="periodGrid" class="grid grid-cols-2 gap-2"></div>
+                </div>
+            </div>
+            <button onclick="searchRooms()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-5 rounded-2xl font-black text-sm shadow-xl shadow-indigo-900/40 transition-all active:scale-95 uppercase tracking-widest">Search Rooms</button>
+        </div>
+
+        <div id="roomResults" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <footer class="text-center py-12 text-indigo-300/50 text-[10px] font-bold uppercase tracking-[0.3em]">
+        Designed for AUST by <span class="text-white">Ratul Krishna Mojumder</span>
+    </footer>
+
+    <div id="mentorModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center z-50 p-6">
+        <div class="glass-card p-8 rounded-[32px] w-full max-w-xs text-center border-white/10">
+            <h2 class="font-black text-white mb-6 uppercase tracking-widest text-lg">AUST Mentor</h2>
+            <input type="password" id="mCodeInput" class="w-full p-4 bg-white/5 rounded-2xl mb-4 text-center text-2xl font-black text-white border border-white/20 outline-none focus:border-indigo-500" placeholder="••••">
+            <button onclick="loginMentor()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black uppercase shadow-lg">Verify</button>
+            <button onclick="closeModal('mentorModal')" class="mt-4 text-white/40 text-[10px] font-bold uppercase">Close</button>
+        </div>
+    </div>
+
+    <div id="bookingModal" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden flex items-center justify-center z-50 p-6">
+        <div class="glass-card p-8 rounded-[40px] w-full max-w-sm border-white/20">
+            <h2 id="bookRoomTitle" class="text-3xl font-black text-white mb-1 tracking-tight">Room</h2>
+            <p class="text-[10px] text-indigo-300 font-bold uppercase mb-6 tracking-widest">Register Session</p>
+            <div id="bookSlotList" class="space-y-2 mb-6 max-h-52 overflow-y-auto pr-2 custom-scrollbar border-y border-white/10 py-4"></div>
+            <select id="wingSelect" class="w-full p-4 bg-white/10 rounded-2xl mb-6 font-bold text-white border border-white/20 outline-none focus:ring-2 ring-green-500">
+                <option value="">Select Wing</option>
+                <option value="W1">Wing 1 (W1)</option>
+                <option value="W2">Wing 2 (W2)</option>
+                <option value="W3">Wing 3 (W3)</option>
+            </select>
+            <button onclick="submitBooking()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-black uppercase shadow-xl hover:bg-green-500 transition-all">Confirm Booking</button>
+            <button onclick="closeModal('bookingModal')" class="w-full mt-4 text-white/30 text-[10px] font-bold uppercase text-center">Back</button>
+        </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
