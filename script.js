@@ -15,7 +15,8 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const periods = ["08:00 AM-08:50 AM", "08:50 AM-09:40 AM", "09:40 AM-10:30 AM", "10:30 AM-11:20 AM", "11:20 AM-12:10 PM", "12:10 PM-01:00 PM", "01:00 PM-01:50 PM", "01:50 PM-02:40 PM", "02:40 PM-03:30 PM", "03:30 PM-04:20 PM", "04:20 PM-05:10 PM", "05:10 PM-06:00 PM"];
-const mentors = [{ name: "Ratul Krishna Mojumder", code: "RATUL2026" }];
+const mentors = [{ name: "Ratul Krishna Mojumder", code: "RATUL2026" },
+                { name: "Mrinmoy Paul Kabbo", code: "Kabbo20" }];
 
 let currentMentor = null, roomData = [], liveBookings = [], currentRoom = null;
 
@@ -192,5 +193,6 @@ function autoCleanup() {
 window.toggleLiveSidebar = () => document.getElementById('liveSidebar').classList.toggle('translate-x-full');
 window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
 window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+
 
 init();
